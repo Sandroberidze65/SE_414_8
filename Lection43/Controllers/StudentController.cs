@@ -18,7 +18,13 @@ public class StudentController(StudentFeatures studentFeatures) : ControllerBase
     [HttpGet("{Id}")]
     public async Task<ActionResult<StudentDto>> Get(int Id)
     {
-        return Ok(await studentFeatures.GetStudent(Id));
+        var student = await studentFeatures.GetStudent(Id);
+
+        if (student == null)
+            return NotFound();
+
+
+        return Ok(student);
     }
 
     [HttpPost]
