@@ -1,5 +1,6 @@
 using Application.Features.Students;
 using Application.Interfaces;
+using Application.Profiles;
 using Microsoft.EntityFrameworkCore;
 using Persistance;
 using Persistance.Repositories;
@@ -18,7 +19,7 @@ builder.Services.AddDbContext<Lection43DBContext>(dbContextOptions => dbContextO
 
 builder.Services.AddScoped<StudentFeatures>();
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
-
+builder.Services.AddAutoMapper(cfg => { }, typeof(MappingProfiles));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

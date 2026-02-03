@@ -1,11 +1,12 @@
 ﻿using Application.Dtos;
 using Application.Exceptions;
 using Application.Interfaces;
+using AutoMapper;
 using Domain.Model;
 
 namespace Application.Features.Students;
 
-public class StudentFeatures(IStudentRepository studentRepository)
+public class StudentFeatures(IStudentRepository studentRepository, IMapper mapper)
 {
 
     public async Task<IReadOnlyList<StudentDto>> GetAllAsync()
@@ -30,12 +31,7 @@ public class StudentFeatures(IStudentRepository studentRepository)
 
     public async Task<bool> CreateStudent(StudentDto student)
     {
-        var temp = new Student()
-        {
-            Lastname = student.Lastname,
-            Age = student.Age,
-            Studentname = student.Name
-        };
+        var temp = mapper.Map<Student>(student);
         return await studentRepository.AddStudnetAsync(temp);
     }
 
