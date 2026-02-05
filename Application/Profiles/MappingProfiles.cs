@@ -8,7 +8,10 @@ public class MappingProfiles : Profile
 {
     public MappingProfiles()
     {
-        CreateMap<Student,StudentDto>();
+        CreateMap<Student, StudentDto>()
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Studentname))
+            .ReverseMap();
+
         CreateMap<University, UniversityDto>().ReverseMap();
     }
 }

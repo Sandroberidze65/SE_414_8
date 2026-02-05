@@ -1,6 +1,8 @@
 using Application.Features.Students;
 using Application.Interfaces;
 using Application.Profiles;
+using Asp.Versioning;
+using Asp.Versioning.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
 using Persistance;
 using Persistance.Repositories;
@@ -16,6 +18,14 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<Lection43DBContext>(dbContextOptions => dbContextOptions.UseSqlServer(
     builder.Configuration["ConnectionStrings:DefaultConnection"]));
+
+builder.Services.AddApiVersioning(setupAction =>
+{
+    setupAction.AssumeDefaultVersionWhenUnspecified = true;
+    setupAction.DefaultApiVersion = new ApiVersion(1, 0);
+    setupAction.ReportApiVersions = true;
+}).AddMvc();
+
 
 builder.Services.AddScoped<StudentFeatures>();
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();

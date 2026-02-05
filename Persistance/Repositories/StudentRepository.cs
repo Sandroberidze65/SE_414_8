@@ -11,7 +11,7 @@ public class StudentRepository(Lection43DBContext _dbContext) : IStudentReposito
         await _dbContext.Students.AddAsync(student);
         var result = await _dbContext.SaveChangesAsync();
 
-        return result == 1 ? true : false;
+        return result > 0 ? true : false;
     }
 
     public async Task<Student?> GetStudentAsync(int id)

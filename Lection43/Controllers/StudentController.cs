@@ -1,21 +1,22 @@
 ﻿using Application.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using Application.Features.Students;
-using Domain.Model;
+using Asp.Versioning;
 
 namespace Lection43.Controllers;
 
+[ApiVersion("1.0")]
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/v{version:apiVersion}/[controller]")]
 public class StudentController(StudentFeatures studentFeatures) : ControllerBase
 {
-
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<StudentDto>>> Get()
     {
         return Ok(await studentFeatures.GetAllAsync());
     }
 
+    [ApiVersion("2.0")]
     [HttpGet("{Id}")]
     public async Task<ActionResult<StudentDto>> Get(int Id)
     {
