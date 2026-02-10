@@ -2,11 +2,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Application.Features.Students;
 using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Lection43.Controllers;
 
 [ApiVersion("1.0")]
 [ApiController]
+[Authorize]
 [Route("api/v{version:apiVersion}/[controller]")]
 public class StudentController(StudentFeatures studentFeatures) : ControllerBase
 {
@@ -17,6 +19,7 @@ public class StudentController(StudentFeatures studentFeatures) : ControllerBase
     }
 
     [ApiVersion("2.0")]
+    [ApiVersion("1.0")]
     [HttpGet("{Id}")]
     public async Task<ActionResult<StudentDto>> Get(int Id)
     {
