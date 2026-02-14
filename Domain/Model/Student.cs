@@ -1,12 +1,22 @@
 ﻿using Domain.Base;
+using System;
 
 namespace Domain.Model;
 
 public class Student : Base<int>
 {
-    public string Studentname { get; set; } = string.Empty;
-    public string Lastname { get; set; } = string.Empty;
-    public int Age { get; set; }
-    public Address Address { get; set; } = new();
-    public List<Subject> Subjects { get; set; } = new();
+    public Student(string studentname, string lastname, int age)
+    {
+        Studentname = Char.ToUpper(studentname.First()) + studentname.Substring(1).ToLower();
+        Lastname = Char.ToUpper(lastname.First()) + lastname.Substring(1).ToLower();
+        Age = age;
+        Address = new();
+        Subjects = new();
+    }
+
+    public string Studentname { get;}
+    public string Lastname { get; }
+    public int Age { get; }
+    public Address Address { get; set; }
+    public List<Subject> Subjects { get; set; }
 }
