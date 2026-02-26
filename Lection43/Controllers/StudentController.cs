@@ -21,7 +21,7 @@ public class StudentController(StudentFeatures studentFeatures) : ControllerBase
     [ApiVersion("2.0")]
     [ApiVersion("1.0")]
     [HttpGet("{Id}")]
-    public async Task<ActionResult<StudentDto>> Get(int Id)
+    public async Task<ActionResult<StudentDto>> Get( int Id)
     {
 
         try
@@ -40,7 +40,18 @@ public class StudentController(StudentFeatures studentFeatures) : ControllerBase
     [HttpPost]
     public async Task<ActionResult<bool>> Add(StudentDto student)
     {
-        return Ok(await studentFeatures.CreateStudent(student));
+        var result = await studentFeatures.CreateStudent(student);
+        if (result)
+        {
+            return Created();
+        }
+        return BadRequest();
+    }
+
+    [HttpDelete("{Id}")]
+    public async Task<ActionResult> Delete(int Id)
+    {
+        return NoContent();
     }
 
 }

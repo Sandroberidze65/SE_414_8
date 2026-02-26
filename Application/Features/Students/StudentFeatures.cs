@@ -8,7 +8,6 @@ namespace Application.Features.Students;
 
 public class StudentFeatures(IStudentRepository studentRepository, IMapper mapper)
 {
-
     public async Task<IReadOnlyList<StudentDto>> GetAllAsync()
     {
         var student = await studentRepository.GetStudentsAsync();
