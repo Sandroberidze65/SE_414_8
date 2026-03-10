@@ -3,18 +3,20 @@ using Microsoft.AspNetCore.Mvc;
 using Application.Features.Students;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
+using Lection43.Filters;
 
 namespace Lection43.Controllers;
 
 [ApiVersion("1.0")]
 [ApiController]
-[Authorize]
 [Route("api/v{version:apiVersion}/[controller]")]
 public class StudentController(StudentFeatures studentFeatures) : ControllerBase
 {
     [HttpGet]
+    [ServiceFilter(typeof(TimerFilter))]
     public async Task<ActionResult<IReadOnlyList<StudentDto>>> Get()
     {
+        Console.WriteLine("From Action ");
         return Ok(await studentFeatures.GetAllAsync());
     }
 

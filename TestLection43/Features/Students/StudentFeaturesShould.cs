@@ -21,7 +21,7 @@ public class StudentFeaturesShould
 
         var studentsFromRepo = new List<Student>
         {
-            new Student ("nikoloz", "Chaduneli", 16)
+            //new Student ("nikoloz", "Chaduneli", 16)
         };
 
         var expectedDtos = new List<StudentDto>

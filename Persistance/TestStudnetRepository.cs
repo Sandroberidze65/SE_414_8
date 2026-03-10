@@ -5,7 +5,10 @@ namespace Persistance;
 
 public class TestStudnetRepository : IStudentRepository
 {
-    private static List<Student> stundents = new();
+    private static List<Student> stundents = new()
+    {
+        new Student {Id=1, Studentname = "Shalva", Lastname = "mindorashvili", Age=18}
+    };
     public async Task<bool> AddStudnetAsync(Student student)
     {
         stundents.Add(student);

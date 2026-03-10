@@ -2,6 +2,7 @@ using Application.Features.Students;
 using Application.Interfaces;
 using Application.Profiles;
 using Asp.Versioning;
+using Lection43.Filters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -41,7 +42,7 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-builder.Services.AddDbContext<Lection43DBContext>(dbContextOptions => dbContextOptions.UseSqlServer(
+builder.Services.AddDbContext<Lection43DBContext>(dbContextOptions => dbContextOptions.UseSqlite(
     builder.Configuration["ConnectionStrings:DefaultConnection"]));
 
 builder.Services.AddApiVersioning(setupAction =>
@@ -67,6 +68,8 @@ builder.Services.AddAuthentication("Bearer").AddJwtBearer(options =>
 
 
 builder.Services.AddScoped<StudentFeatures>();
+builder.Services.AddScoped<TimerFilter>();
+builder.Services.AddScoped<LogFilter>();
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 builder.Services.AddAutoMapper(cfg => { }, typeof(MappingProfiles));
 
@@ -75,16 +78,18 @@ builder.Services.AddAutoMapper(cfg => { }, typeof(MappingProfiles));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+//if (app.Environment.IsDevelopment())
+//{
+app.UseSwagger();
+app.UseSwaggerUI();
+//}
 
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+//app.UseCostomMiddleware();
 
 app.MapControllers();
 
