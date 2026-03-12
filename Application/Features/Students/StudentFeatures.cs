@@ -22,7 +22,7 @@ public class StudentFeatures(IStudentRepository studentRepository, IMapper mappe
 
         if (stundet == null)
         {
-            throw new StudentNotFoundException("Stundet Not Found");
+            return null;
         }
 
         return new StudentDto(stundet.Studentname, stundet.Lastname, stundet.Age);

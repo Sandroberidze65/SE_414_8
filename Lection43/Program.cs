@@ -3,6 +3,7 @@ using Application.Interfaces;
 using Application.Profiles;
 using Asp.Versioning;
 using Lection43.Filters;
+using Lection43.Middleware;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -77,6 +78,7 @@ builder.Services.AddAutoMapper(cfg => { }, typeof(MappingProfiles));
 
 var app = builder.Build();
 
+
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
 //{
@@ -92,5 +94,7 @@ app.UseAuthorization();
 //app.UseCostomMiddleware();
 
 app.MapControllers();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.Run();
