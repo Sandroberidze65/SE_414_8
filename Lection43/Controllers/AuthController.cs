@@ -1,6 +1,8 @@
 ﻿using Domain.Model;
+using Lection43.Options;
 using Lection43.RequestModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -10,7 +12,9 @@ namespace Lection43.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthController(IConfiguration _configuration) : ControllerBase
+public class AuthController(
+    IOptions<AuthenticationOptions> options
+) : ControllerBase
 {
     private static List<User> _users = new()
     {
@@ -29,7 +33,7 @@ public class AuthController(IConfiguration _configuration) : ControllerBase
             return Unauthorized();
         }
 
-        var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["Authentification:SecretKeyFor"]!));
+        var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(options.Value.SecretKeyFor));
 
         var signinCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
@@ -42,8 +46,8 @@ public class AuthController(IConfiguration _configuration) : ControllerBase
         };
 
         var jwtSecurityToken = new JwtSecurityToken(
-                _configuration["Authentification:Issuer"],
-                _configuration["Authentification:Audiance"],
+                options.Value.Issuer,
+                options.Value.Audiance,
                 claimsForToken,
                 DateTime.Now,
                 DateTime.Now.AddHours(1),

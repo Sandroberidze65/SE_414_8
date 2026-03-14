@@ -4,6 +4,7 @@ using Application.Profiles;
 using Asp.Versioning;
 using Lection43.Filters;
 using Lection43.Middleware;
+using Lection43.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -15,6 +16,14 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.Configure<ConnectionOptions>(
+    builder.Configuration.GetSection("ConnectionStrings")
+);
+
+builder.Services.Configure<AuthenticationOptions>(
+    builder.Configuration.GetSection("Authentification")
+);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -43,8 +52,18 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-builder.Services.AddDbContext<Lection43DBContext>(dbContextOptions => dbContextOptions.UseSqlite(
-    builder.Configuration["ConnectionStrings:DefaultConnection"]));
+var connection = builder.Configuration.GetSection("ConnectionStrings").Get<ConnectionOptions>();
+
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddDbContext<Lection43DBContext>(dbContextOptions => dbContextOptions.UseSqlServer(connection!.DefaultConnection));
+}
+else
+{
+    builder.Services.AddDbContext<Lection43DBContext>(dbContextOptions => dbContextOptions.UseSqlite(connection!.DefaultConnection));
+}
+
+
 
 builder.Services.AddApiVersioning(setupAction =>
 {
@@ -53,6 +72,7 @@ builder.Services.AddApiVersioning(setupAction =>
     setupAction.ReportApiVersions = true;
 }).AddMvc();
 
+var auth = builder.Configuration.GetSection("Authentification").Get<AuthenticationOptions>();
 
 builder.Services.AddAuthentication("Bearer").AddJwtBearer(options =>
 {
@@ -61,9 +81,9 @@ builder.Services.AddAuthentication("Bearer").AddJwtBearer(options =>
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Authentification:Issuer"],
-        ValidAudience = builder.Configuration["Authentification:Audiance"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Authentification:SecretKeyFor"]!))
+        ValidIssuer = auth!.Issuer,
+        ValidAudience = auth!.Audiance,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(auth!.SecretKeyFor))
     };
 });
 
@@ -80,11 +100,11 @@ var app = builder.Build();
 
 
 // Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
-app.UseSwagger();
-app.UseSwaggerUI();
-//}
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.UseHttpsRedirection();
 
