@@ -28,16 +28,18 @@ public class StudentController(StudentFeatures studentFeatures) : ControllerBase
     public async Task<ActionResult<StudentDto>> Get(int Id)
     {
 
-        try
-        {
-            var student = await studentFeatures.GetStudent(Id);
-            return Ok(student);
-        }
-        catch (Exception ex)
-        {
+        var result = await studentFeatures.GetStudent(Id);
+        if (result.IsSuccess)
+            return Ok(result);
 
-            return BadRequest(ex.Message);
-        }
+        return NotFound(new ProblemDetails
+            {
+                Title = "Student not found",
+                Detail = result.Error,
+                Status = StatusCodes.Status404NotFound,
+                Instance = HttpContext.Request.Path
+            }
+        );
 
     }
 

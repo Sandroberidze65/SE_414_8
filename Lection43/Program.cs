@@ -107,14 +107,13 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseCostomMiddleware();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseStaticFiles();
-//app.UseCostomMiddleware();
 
 app.MapControllers();
 
-app.UseMiddleware<ExceptionMiddleware>();
+
 
 app.Run();

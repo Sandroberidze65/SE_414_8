@@ -1,4 +1,5 @@
-﻿using Application.Dtos;
+﻿using Application.Commons;
+using Application.Dtos;
 using Application.Interfaces;
 using Application.Requests;
 using AutoMapper;
@@ -16,16 +17,18 @@ public class StudentFeatures(IStudentRepository studentRepository, IMapper mappe
 
     }
 
-    public async Task<StudentDto> GetStudent(int id)
+    public async Task<Result<StudentDto>> GetStudent(int id)
     {
+        if (id <= 0)
+            return Result<StudentDto>.Failed("Id should be greater that 0");
+
         var stundet = await studentRepository.GetStudentAsync(id);
 
         if (stundet == null)
-        {
-            return null;
-        }
+            return Result<StudentDto>.Failed($"Student with id {id} was not found");
 
-        return new StudentDto(stundet.Studentname, stundet.Lastname, stundet.Age, stundet.PhotoPath);
+
+        return Result<StudentDto>.Success( new StudentDto(stundet.Studentname, stundet.Lastname, stundet.Age, stundet.PhotoPath));
     }
 
     public async Task<bool> CreateStudent(StudentRequest student)
