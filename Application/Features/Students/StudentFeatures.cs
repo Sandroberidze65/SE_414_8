@@ -1,6 +1,6 @@
 ﻿using Application.Dtos;
-using Application.Exceptions;
 using Application.Interfaces;
+using Application.Requests;
 using AutoMapper;
 using Domain.Model;
 
@@ -12,7 +12,7 @@ public class StudentFeatures(IStudentRepository studentRepository, IMapper mappe
     {
         var student = await studentRepository.GetStudentsAsync();
 
-        return student.Select(s => new StudentDto(s.Studentname, s.Lastname, s.Age)).ToList();
+        return student.Select(s => new StudentDto(s.Studentname, s.Lastname, s.Age, s.PhotoPath)).ToList();
 
     }
 
@@ -25,13 +25,40 @@ public class StudentFeatures(IStudentRepository studentRepository, IMapper mappe
             return null;
         }
 
-        return new StudentDto(stundet.Studentname, stundet.Lastname, stundet.Age);
+        return new StudentDto(stundet.Studentname, stundet.Lastname, stundet.Age, stundet.PhotoPath);
     }
 
-    public async Task<bool> CreateStudent(StudentDto student)
+    public async Task<bool> CreateStudent(StudentRequest student)
     {
-        var temp = mapper.Map<Student>(student);
-        return await studentRepository.AddStudnetAsync(temp);
+        string? filePath = null;
+
+        if (student.Photo is not null && student.Photo.Length > 0)
+        {
+            var extension = Path.GetExtension(student.Photo.FileName);
+            var fileName = $"{Guid.NewGuid()}{extension}";
+            var folder = Path.Combine("wwwroot", "uploads");
+
+            if (!Directory.Exists(folder))
+                Directory.CreateDirectory(folder);
+
+            var fullPath = Path.Combine(folder, fileName);
+
+            await using var stream = new FileStream(fullPath, FileMode.Create);
+            await student.Photo.CopyToAsync(stream);
+
+            filePath = $"/uploads/{fileName}";
+        }
+
+        var entity = new Student
+        {
+            Studentname = student.Name,
+            Lastname = student.Lastname,
+            Age = student.Age,
+            PhotoPath = filePath
+        };
+
+        return await studentRepository.AddStudnetAsync(entity);
+
     }
 
 }

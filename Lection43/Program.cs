@@ -54,14 +54,14 @@ builder.Services.AddSwaggerGen(options =>
 
 var connection = builder.Configuration.GetSection("ConnectionStrings").Get<ConnectionOptions>();
 
-if (builder.Environment.IsDevelopment())
-{
-    builder.Services.AddDbContext<Lection43DBContext>(dbContextOptions => dbContextOptions.UseSqlServer(connection!.DefaultConnection));
-}
-else
-{
+//if (builder.Environment.IsDevelopment())
+//{
+//    builder.Services.AddDbContext<Lection43DBContext>(dbContextOptions => dbContextOptions.UseSqlServer(connection!.DefaultConnection));
+//}
+//else
+//{
     builder.Services.AddDbContext<Lection43DBContext>(dbContextOptions => dbContextOptions.UseSqlite(connection!.DefaultConnection));
-}
+//}
 
 
 
@@ -110,7 +110,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseStaticFiles();
 //app.UseCostomMiddleware();
 
 app.MapControllers();

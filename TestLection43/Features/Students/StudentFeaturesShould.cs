@@ -26,7 +26,7 @@ public class StudentFeaturesShould
 
         var expectedDtos = new List<StudentDto>
         {
-            new StudentDto("Nikoloz", "Chaduneli", 16)
+            new StudentDto("Nikoloz", "Chaduneli", 16, "test.png")
         };
 
         studentRepositorySub

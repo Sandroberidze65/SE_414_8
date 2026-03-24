@@ -5,6 +5,7 @@ using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Lection43.Filters;
 using Application.Commons;
+using Application.Requests;
 
 namespace Lection43.Controllers;
 
@@ -41,7 +42,7 @@ public class StudentController(StudentFeatures studentFeatures) : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<bool>> Add(StudentDto student)
+    public async Task<ActionResult<bool>> Add([FromForm] StudentRequest student)
     {
         var result = await studentFeatures.CreateStudent(student);
         if (result)
